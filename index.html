@@ -1,0 +1,708 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+
+    <title>SeedFlow | Smart Seed Production</title>
+
+    <meta name="description"
+        content="SeedFlow connects companies, farmers and quality teams through a smart seed production management platform.">
+
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+
+    <link href="https://fonts.googleapis.com/css2?family=DM+Sans:wght@400;500;600;700&family=Playfair+Display:wght@500;600;700&display=swap"
+        rel="stylesheet">
+
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        html {
+            scroll-behavior: smooth;
+        }
+
+        body {
+            font-family: "DM Sans", sans-serif;
+            background: #f5f3ed;
+            color: #183326;
+        }
+
+        /* NAVBAR */
+
+        header {
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            z-index: 1000;
+            padding: 18px 6%;
+        }
+
+        .navbar {
+            max-width: 1250px;
+            margin: auto;
+            padding: 14px 20px;
+            border-radius: 18px;
+
+            background: rgba(255,255,255,0.78);
+            backdrop-filter: blur(18px);
+            -webkit-backdrop-filter: blur(18px);
+
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+
+            box-shadow: 0 10px 35px rgba(20,50,35,0.08);
+        }
+
+        .logo {
+            display: flex;
+            align-items: center;
+            gap: 10px;
+
+            text-decoration: none;
+            color: #183326;
+            font-size: 22px;
+            font-weight: 700;
+            letter-spacing: -0.5px;
+        }
+
+        .logo-icon {
+            width: 38px;
+            height: 38px;
+            border-radius: 12px;
+            background: #285c3b;
+
+            display: flex;
+            align-items: center;
+            justify-content: center;
+
+            color: white;
+            font-size: 19px;
+        }
+
+        nav {
+            display: flex;
+            gap: 30px;
+            align-items: center;
+        }
+
+        nav a {
+            text-decoration: none;
+            color: #476052;
+            font-size: 14px;
+            font-weight: 500;
+            transition: 0.3s;
+        }
+
+        nav a:hover {
+            color: #285c3b;
+        }
+
+        .login-btn {
+            padding: 11px 19px;
+            border-radius: 12px;
+            background: #285c3b;
+            color: white !important;
+        }
+
+        .login-btn:hover {
+            background: #183f28;
+        }
+
+        /* HERO */
+
+        .hero {
+            min-height: 100vh;
+            padding: 140px 6% 70px;
+
+            display: flex;
+            align-items: center;
+        }
+
+        .hero-container {
+            max-width: 1250px;
+            width: 100%;
+            margin: auto;
+
+            display: grid;
+            grid-template-columns: 1fr 1.05fr;
+            gap: 60px;
+            align-items: center;
+        }
+
+        .eyebrow {
+            display: inline-flex;
+            align-items: center;
+            gap: 8px;
+
+            padding: 8px 13px;
+            border-radius: 30px;
+
+            background: #e3eadf;
+            color: #285c3b;
+
+            font-size: 12px;
+            font-weight: 700;
+            letter-spacing: 1px;
+            text-transform: uppercase;
+
+            margin-bottom: 25px;
+        }
+
+        .dot {
+            width: 7px;
+            height: 7px;
+            border-radius: 50%;
+            background: #5b8b68;
+        }
+
+        .hero h1 {
+            font-family: "Playfair Display", serif;
+            font-size: clamp(50px, 6vw, 82px);
+            line-height: 0.98;
+            letter-spacing: -3px;
+            font-weight: 600;
+            margin-bottom: 27px;
+        }
+
+        .hero h1 span {
+            color: #5f8567;
+        }
+
+        .hero-text {
+            max-width: 560px;
+            color: #63736a;
+            font-size: 17px;
+            line-height: 1.75;
+            margin-bottom: 34px;
+        }
+
+        .hero-buttons {
+            display: flex;
+            gap: 13px;
+            flex-wrap: wrap;
+        }
+
+        .primary-btn,
+        .secondary-btn {
+            padding: 15px 23px;
+            border-radius: 13px;
+            text-decoration: none;
+            font-size: 14px;
+            font-weight: 600;
+            transition: 0.3s;
+        }
+
+        .primary-btn {
+            background: #285c3b;
+            color: white;
+            box-shadow: 0 12px 25px rgba(40,92,59,0.2);
+        }
+
+        .primary-btn:hover {
+            transform: translateY(-3px);
+            background: #183f28;
+        }
+
+        .secondary-btn {
+            background: #ffffff;
+            color: #285c3b;
+            border: 1px solid #dce4dc;
+        }
+
+        .secondary-btn:hover {
+            transform: translateY(-3px);
+            border-color: #9eb4a2;
+        }
+
+        /* HERO IMAGE */
+
+        .hero-visual {
+            position: relative;
+        }
+
+        .hero-image {
+            width: 100%;
+            height: 590px;
+            object-fit: cover;
+
+            border-radius: 32px;
+
+            box-shadow:
+                0 30px 70px rgba(35,62,45,0.18);
+        }
+
+        .image-overlay {
+            position: absolute;
+            inset: 0;
+            border-radius: 32px;
+
+            background:
+                linear-gradient(
+                    180deg,
+                    rgba(15,35,23,0.02),
+                    rgba(15,35,23,0.35)
+                );
+        }
+
+        .floating-card {
+            position: absolute;
+            left: -30px;
+            bottom: 35px;
+
+            padding: 20px 22px;
+            width: 205px;
+
+            background: rgba(255,255,255,0.9);
+            backdrop-filter: blur(15px);
+
+            border-radius: 20px;
+
+            box-shadow: 0 20px 45px rgba(25,55,35,0.16);
+        }
+
+        .floating-card small {
+            color: #7a887f;
+            font-size: 11px;
+        }
+
+        .floating-card strong {
+            display: block;
+            margin-top: 5px;
+            font-size: 20px;
+            color: #285c3b;
+        }
+
+        /* INTRO */
+
+        .intro {
+            padding: 110px 6%;
+            background: #ffffff;
+        }
+
+        .section-container {
+            max-width: 1100px;
+            margin: auto;
+        }
+
+        .section-label {
+            color: #6c8872;
+            font-size: 12px;
+            font-weight: 700;
+            text-transform: uppercase;
+            letter-spacing: 2px;
+            margin-bottom: 15px;
+        }
+
+        .intro h2 {
+            max-width: 760px;
+
+            font-family: "Playfair Display", serif;
+            font-size: clamp(35px, 5vw, 58px);
+            line-height: 1.1;
+            font-weight: 600;
+
+            margin-bottom: 55px;
+        }
+
+        /* FLOW */
+
+        .flow {
+            display: grid;
+            grid-template-columns: repeat(3, 1fr);
+            gap: 18px;
+        }
+
+        .flow-card {
+            padding: 27px;
+            border-radius: 22px;
+            background: #f5f6f1;
+            border: 1px solid #e7ebe5;
+
+            transition: 0.35s;
+        }
+
+        .flow-card:hover {
+            transform: translateY(-7px);
+            box-shadow: 0 18px 40px rgba(30,60,40,0.08);
+        }
+
+        .flow-number {
+            color: #7a947e;
+            font-size: 12px;
+            font-weight: 700;
+            margin-bottom: 22px;
+        }
+
+        .flow-card h3 {
+            font-family: "Playfair Display", serif;
+            font-size: 25px;
+            margin-bottom: 10px;
+        }
+
+        .flow-card p {
+            color: #718078;
+            font-size: 14px;
+            line-height: 1.7;
+        }
+
+        /* WORKFLOW BANNER */
+
+        .workflow {
+            padding: 110px 6%;
+            background: #183326;
+            color: white;
+        }
+
+        .workflow-inner {
+            max-width: 1150px;
+            margin: auto;
+        }
+
+        .workflow .section-label {
+            color: #a8c0ad;
+        }
+
+        .workflow h2 {
+            font-family: "Playfair Display", serif;
+            font-size: clamp(38px, 5vw, 62px);
+            max-width: 700px;
+            line-height: 1.05;
+            margin-bottom: 55px;
+        }
+
+        .steps {
+            display: flex;
+            flex-wrap: wrap;
+            gap: 10px;
+        }
+
+        .step {
+            padding: 13px 17px;
+            border: 1px solid rgba(255,255,255,0.18);
+            border-radius: 30px;
+            color: #d8e4da;
+            font-size: 13px;
+        }
+
+        /* CTA */
+
+        .cta {
+            padding: 110px 6%;
+            text-align: center;
+            background: #e8ece2;
+        }
+
+        .cta h2 {
+            font-family: "Playfair Display", serif;
+            font-size: clamp(40px, 5vw, 65px);
+            margin-bottom: 18px;
+        }
+
+        .cta p {
+            max-width: 570px;
+            margin: auto;
+            color: #68776e;
+            line-height: 1.7;
+            margin-bottom: 30px;
+        }
+
+        /* FOOTER */
+
+        footer {
+            padding: 35px 6%;
+            background: #f5f3ed;
+            text-align: center;
+            color: #7b877f;
+            font-size: 13px;
+        }
+
+        /* MOBILE */
+
+        @media (max-width: 850px) {
+
+            header {
+                padding: 12px 4%;
+            }
+
+            nav a:not(.login-btn) {
+                display: none;
+            }
+
+            .navbar {
+                padding: 12px 15px;
+            }
+
+            .hero {
+                padding: 120px 5% 60px;
+            }
+
+            .hero-container {
+                grid-template-columns: 1fr;
+                gap: 45px;
+            }
+
+            .hero h1 {
+                font-size: 55px;
+                letter-spacing: -2px;
+            }
+
+            .hero-text {
+                font-size: 15px;
+            }
+
+            .hero-image {
+                height: 440px;
+                border-radius: 25px;
+            }
+
+            .floating-card {
+                left: 15px;
+                bottom: 20px;
+            }
+
+            .flow {
+                grid-template-columns: 1fr;
+            }
+
+            .intro,
+            .workflow,
+            .cta {
+                padding: 80px 5%;
+            }
+        }
+
+        @media (max-width: 480px) {
+
+            .logo {
+                font-size: 19px;
+            }
+
+            .logo-icon {
+                width: 34px;
+                height: 34px;
+            }
+
+            .hero h1 {
+                font-size: 47px;
+            }
+
+            .hero-image {
+                height: 390px;
+            }
+
+            .primary-btn,
+            .secondary-btn {
+                width: 100%;
+                text-align: center;
+            }
+        }
+    </style>
+</head>
+
+<body>
+
+    <!-- NAVBAR -->
+
+    <header>
+        <div class="navbar">
+
+            <a href="#" class="logo">
+                <div class="logo-icon">🌱</div>
+                SeedFlow
+            </a>
+
+            <nav>
+                <a href="#about">About</a>
+                <a href="#process">Process</a>
+                <a href="#contact">Contact</a>
+                <a href="#" class="login-btn">Login</a>
+            </nav>
+
+        </div>
+    </header>
+
+
+    <!-- HERO -->
+
+    <section class="hero">
+
+        <div class="hero-container">
+
+            <div class="hero-content">
+
+                <div class="eyebrow">
+                    <span class="dot"></span>
+                    Smart Seed Production
+                </div>
+
+                <h1>
+                    From <span>Seed</span><br>
+                    to Success.
+                </h1>
+
+                <p class="hero-text">
+                    SeedFlow brings companies, farmers and quality teams
+                    together to manage every stage of seed production —
+                    from supply and cultivation to quality, weight and payment.
+                </p>
+
+                <div class="hero-buttons">
+                    <a href="#" class="primary-btn">
+                        Explore SeedFlow →
+                    </a>
+
+                    <a href="#process" class="secondary-btn">
+                        How it works
+                    </a>
+                </div>
+
+            </div>
+
+
+            <div class="hero-visual">
+
+                <img
+                    class="hero-image"
+                    src="https://images.unsplash.com/photo-1500937386664-56d1dfef3854?auto=format&fit=crop&w=1200&q=85"
+                    alt="Agricultural farm">
+
+                <div class="image-overlay"></div>
+
+                <div class="floating-card">
+                    <small>Production Journey</small>
+                    <strong>Seed → Quality</strong>
+                </div>
+
+            </div>
+
+        </div>
+
+    </section>
+
+
+    <!-- INTRO -->
+
+    <section class="intro" id="about">
+
+        <div class="section-container">
+
+            <div class="section-label">
+                One connected platform
+            </div>
+
+            <h2>
+                Every stage of seed production,
+                beautifully connected.
+            </h2>
+
+
+            <div class="flow">
+
+                <div class="flow-card">
+                    <div class="flow-number">01 — FARM</div>
+                    <h3>Plan & Grow</h3>
+                    <p>
+                        Register farms, plots and seed batches while
+                        keeping cultivation information organized.
+                    </p>
+                </div>
+
+                <div class="flow-card">
+                    <div class="flow-number">02 — PRODUCTION</div>
+                    <h3>Track Production</h3>
+                    <p>
+                        Monitor pollination, fruit capacity, ripening,
+                        extraction and drying stages.
+                    </p>
+                </div>
+
+                <div class="flow-card">
+                    <div class="flow-number">03 — QUALITY</div>
+                    <h3>Verify & Deliver</h3>
+                    <p>
+                        Manage quality checks, final weight,
+                        payment records and production reports.
+                    </p>
+                </div>
+
+            </div>
+
+        </div>
+
+    </section>
+
+
+    <!-- WORKFLOW -->
+
+    <section class="workflow" id="process">
+
+        <div class="workflow-inner">
+
+            <div class="section-label">
+                SeedFlow Journey
+            </div>
+
+            <h2>
+                Follow the journey.
+                Control every step.
+            </h2>
+
+            <div class="steps">
+
+                <div class="step">Seed Supply</div>
+                <div class="step">Farm / Plot</div>
+                <div class="step">Cultivation</div>
+                <div class="step">Pollination</div>
+                <div class="step">Fruit Count</div>
+                <div class="step">Ripening</div>
+                <div class="step">Extraction</div>
+                <div class="step">Drying</div>
+                <div class="step">Quality Check</div>
+                <div class="step">Final Weight</div>
+                <div class="step">Payment</div>
+                <div class="step">Reports</div>
+
+            </div>
+
+        </div>
+
+    </section>
+
+
+    <!-- CTA -->
+
+    <section class="cta" id="contact">
+
+        <h2>
+            Grow smarter.
+            Manage better.
+        </h2>
+
+        <p>
+            SeedFlow creates a transparent digital connection
+            between seed companies, farmers and quality teams.
+        </p>
+
+        <a href="#" class="primary-btn">
+            Get Started →
+        </a>
+
+    </section>
+
+
+    <!-- FOOTER -->
+
+    <footer>
+        © 2026 SeedFlow · Smart Seed Production Management
+    </footer>
+
+
+</body>
+  </html>
