@@ -1,0 +1,67 @@
+
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>SeedFlow Dashboard</title>
+<style>
+*{box-sizing:border-box}
+body{margin:0;background:#eef1e9;color:#183326;font-family:Arial,sans-serif}
+header{background:#285c3b;color:white;padding:20px 6%;display:flex;justify-content:space-between;align-items:center;gap:12px;flex-wrap:wrap}
+main{max-width:1050px;margin:35px auto;padding:20px}
+h1{font-size:clamp(27px,5vw,38px)}
+.cards{display:grid;grid-template-columns:repeat(auto-fit,minmax(210px,1fr));gap:18px;margin-top:25px}
+.card{background:white;border-radius:16px;padding:23px;box-shadow:0 5px 20px #18332612}
+.card h3{color:#285c3b}
+button{background:#285c3b;color:white;border:0;border-radius:9px;padding:12px 17px;cursor:pointer}
+a{color:#285c3b}
+</style>
+</head>
+<body>
+<header>
+  <strong>🌱 SeedFlow</strong>
+  <button onclick="logout()">Logout</button>
+</header>
+<main>
+  <p id="roleLabel">Seed Production Portal</p>
+  <h1 id="welcome">Welcome to SeedFlow</h1>
+  <p>Manage your seed production journey in one place.</p>
+  <section class="cards" id="cards"></section>
+  <p style="margin-top:30px"><a href="index.html">← Back to Home</a></p>
+</main>
+<script>
+const role = sessionStorage.getItem("seedflowRole");
+const email = sessionStorage.getItem("seedflowEmail");
+
+if (!role || !email) {
+  window.location.href = "login.html";
+} else {
+  document.getElementById("roleLabel").textContent = role + " Dashboard";
+  document.getElementById("welcome").textContent = "Welcome, " + role;
+
+  const items = role === "Farmer" ? [
+    ["🌱","My Farm","View farm and plot details."],
+    ["🌿","Crop Progress","Track pollination and crop growth."],
+    ["📦","Seed Production","Record harvesting, extraction and drying."],
+    ["💰","My Payments","View seed weight and payment status."]
+  ] : [
+    ["👨‍🌾","Farmers","Manage farmer information."],
+    ["🌱","Production Batches","Monitor plots and crop progress."],
+    ["🔬","Quality Checks","Track germination, purity and inspection."],
+    ["💰","Payments","Review seed weights and farmer payments."]
+  ];
+
+  document.getElementById("cards").innerHTML = items.map(item =>
+    `<article class="card"><div style="font-size:28px">${item[0]}</div><h3>${item[1]}</h3><p>${item[2]}</p></article>`
+  ).join("");
+}
+
+function logout() {
+  sessionStorage.removeItem("seedflowRole");
+  sessionStorage.removeItem("seedflowEmail");
+  window.location.href = "login.html";
+}
+</script>
+</body>
+</html>
