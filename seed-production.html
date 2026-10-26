@@ -1,0 +1,656 @@
+
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>SeedFlow | Seed Production</title>
+
+  <style>
+    :root {
+      --green: #285c3b;
+      --green-light: #e8f2e9;
+      --bg: #f7f8f4;
+      --white: #ffffff;
+      --text: #203328;
+      --muted: #718075;
+      --border: #e1e8df;
+      --orange: #d98a35;
+      --red: #b94b43;
+    }
+
+    * { box-sizing: border-box; }
+
+    body {
+      margin: 0;
+      font-family: Arial, Helvetica, sans-serif;
+      background: var(--bg);
+      color: var(--text);
+    }
+
+    header {
+      background: var(--white);
+      border-bottom: 1px solid var(--border);
+      padding: 18px 6%;
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      gap: 12px;
+      flex-wrap: wrap;
+    }
+
+    .brand {
+      color: var(--green);
+      font-size: 24px;
+      font-weight: 800;
+    }
+
+    .brand span { color: var(--orange); }
+
+    .top-actions {
+      display: flex;
+      gap: 10px;
+      flex-wrap: wrap;
+    }
+
+    button, .back-link {
+      border: 0;
+      border-radius: 9px;
+      padding: 11px 15px;
+      font-size: 14px;
+      font-weight: 700;
+      cursor: pointer;
+      text-decoration: none;
+    }
+
+    .primary { background: var(--green); color: white; }
+    .secondary { background: var(--green-light); color: var(--green); }
+    .danger { background: #fff0ee; color: var(--red); }
+
+    main {
+      width: min(1100px, 92%);
+      margin: 32px auto;
+    }
+
+    .eyebrow {
+      color: var(--green);
+      font-weight: 800;
+      font-size: 12px;
+      letter-spacing: 1.5px;
+      text-transform: uppercase;
+    }
+
+    h1 {
+      margin: 8px 0;
+      font-size: clamp(28px, 5vw, 38px);
+    }
+
+    h2 { margin-top: 0; font-size: 20px; }
+    p { line-height: 1.6; }
+    .muted { color: var(--muted); }
+
+    .layout {
+      display: grid;
+      grid-template-columns: minmax(0, 1.1fr) minmax(0, 1fr);
+      gap: 20px;
+      align-items: start;
+    }
+
+    .card {
+      background: var(--white);
+      border: 1px solid var(--border);
+      border-radius: 16px;
+      padding: 23px;
+      margin-bottom: 20px;
+      box-shadow: 0 5px 20px rgba(31, 60, 39, 0.04);
+    }
+
+    .section-label {
+      color: var(--green);
+      font-size: 12px;
+      letter-spacing: 1px;
+      font-weight: 800;
+      text-transform: uppercase;
+      margin-top: 24px;
+      padding-bottom: 8px;
+      border-bottom: 1px solid var(--border);
+    }
+
+    label {
+      display: block;
+      font-size: 13px;
+      font-weight: 700;
+      margin: 15px 0 7px;
+    }
+
+    input, select, textarea {
+      width: 100%;
+      border: 1px solid #d9e2d7;
+      border-radius: 9px;
+      padding: 12px;
+      background: white;
+      color: var(--text);
+      font: inherit;
+    }
+
+    input:focus, select:focus, textarea:focus {
+      outline: 2px solid #b9d7bd;
+      border-color: var(--green);
+    }
+
+    textarea { min-height: 85px; resize: vertical; }
+    .full { width: 100%; margin-top: 18px; }
+
+    #message {
+      display: none;
+      padding: 12px;
+      margin-bottom: 16px;
+      border-radius: 9px;
+      font-size: 14px;
+    }
+
+    .summary-grid {
+      display: grid;
+      grid-template-columns: 1fr 1fr;
+      gap: 12px;
+      margin-top: 16px;
+    }
+
+    .stat {
+      padding: 16px;
+      background: #f5f8f3;
+      border: 1px solid var(--border);
+      border-radius: 12px;
+    }
+
+    .stat-label {
+      color: var(--muted);
+      font-size: 12px;
+    }
+
+    .stat-value {
+      font-size: 23px;
+      font-weight: 800;
+      color: var(--green);
+      margin-top: 7px;
+      overflow-wrap: anywhere;
+    }
+
+    .record {
+      border: 1px solid var(--border);
+      border-radius: 12px;
+      padding: 16px;
+      margin-top: 13px;
+    }
+
+    .record h3 { margin: 0 0 8px; font-size: 17px; }
+
+    .pill {
+      display: inline-block;
+      background: var(--green-light);
+      color: var(--green);
+      padding: 6px 10px;
+      border-radius: 20px;
+      font-size: 12px;
+      font-weight: 700;
+    }
+
+    .record p { margin: 7px 0; font-size: 14px; }
+    .record-actions { display: flex; gap: 8px; margin-top: 12px; flex-wrap: wrap; }
+    .record-actions button { padding: 9px 11px; }
+
+    .empty {
+      padding: 24px 12px;
+      text-align: center;
+      color: var(--muted);
+      border: 1px dashed #cdd9cb;
+      border-radius: 12px;
+      margin-top: 14px;
+    }
+
+    footer {
+      text-align: center;
+      color: var(--muted);
+      padding: 20px;
+      font-size: 12px;
+    }
+
+    @media (max-width: 760px) {
+      .layout { grid-template-columns: 1fr; }
+      header { padding: 16px 4%; }
+      .card { padding: 18px; }
+    }
+  </style>
+</head>
+
+<body>
+  <header>
+    <div class="brand">Seed<span>Flow</span></div>
+    <div class="top-actions">
+      <a class="back-link secondary" href="dashboard.html">← Dashboard</a>
+      <button class="secondary" type="button" onclick="logout()">Logout</button>
+    </div>
+  </header>
+
+  <main>
+    <div class="eyebrow">Farmer workspace</div>
+    <h1>Seed Production 🌾</h1>
+    <p class="muted">Record harvesting, extraction, drying and final seed quantity.</p>
+    <p id="userInfo" class="muted"></p>
+
+    <div id="message" role="status"></div>
+
+    <div class="layout">
+      <section class="card">
+        <h2 id="formTitle">Add production record</h2>
+        <p class="muted">Enter the details for one crop batch.</p>
+
+        <form id="productionForm">
+          <label for="farmName">Farm name *</label>
+          <input id="farmName" list="farmOptions" maxlength="80"
+                 placeholder="e.g. North Plot" required>
+          <datalist id="farmOptions"></datalist>
+
+          <label for="cropName">Crop name *</label>
+          <input id="cropName" maxlength="60"
+                 placeholder="e.g. Tomato" required>
+
+          <label for="batchNumber">Batch / Plot number</label>
+          <input id="batchNumber" maxlength="60"
+                 placeholder="e.g. Batch 01">
+
+          <div class="section-label">01 · Harvesting</div>
+
+          <label for="fruitCount">Fruit count</label>
+          <input id="fruitCount" type="number" min="0" step="1"
+                 placeholder="Enter number of fruits">
+
+          <label for="harvestDate">Harvesting date</label>
+          <input id="harvestDate" type="date">
+
+          <div class="section-label">02 · Seed extraction</div>
+
+          <label for="extractionDate">Extraction date</label>
+          <input id="extractionDate" type="date">
+
+          <label for="extractionStatus">Extraction status</label>
+          <select id="extractionStatus">
+            <option value="Not started">Not started</option>
+            <option value="In progress">In progress</option>
+            <option value="Completed">Completed</option>
+          </select>
+
+          <div class="section-label">03 · First drying</div>
+
+          <label for="drying1Date">First drying date</label>
+          <input id="drying1Date" type="date">
+
+          <label for="drying1Status">First drying status</label>
+          <select id="drying1Status">
+            <option value="Not started">Not started</option>
+            <option value="In progress">In progress</option>
+            <option value="Completed">Completed</option>
+          </select>
+
+          <div class="section-label">04 · Second drying</div>
+
+          <label for="drying2Date">Second drying date</label>
+          <input id="drying2Date" type="date">
+
+          <label for="drying2Status">Second drying status</label>
+          <select id="drying2Status">
+            <option value="Not started">Not started</option>
+            <option value="In progress">In progress</option>
+            <option value="Completed">Completed</option>
+          </select>
+
+          <div class="section-label">05 · Final production</div>
+
+          <label for="seedWeight">Final seed quantity (kg)</label>
+          <input id="seedWeight" type="number" min="0" step="0.001"
+                 placeholder="e.g. 12.500">
+
+          <label for="notes">Notes / observations</label>
+          <textarea id="notes" maxlength="1000"
+                    placeholder="Enter drying observations, losses or other details..."></textarea>
+
+          <button class="primary full" id="saveButton" type="submit">
+            Save Production Record
+          </button>
+
+          <button class="secondary full" id="cancelEdit" type="button"
+                  style="display:none" onclick="resetForm()">
+            Cancel Edit
+          </button>
+        </form>
+      </section>
+
+      <section>
+        <div class="card">
+          <h2>Production overview</h2>
+          <p class="muted">Summary of the records saved in this browser.</p>
+
+          <div class="summary-grid">
+            <div class="stat">
+              <div class="stat-label">Production records</div>
+              <div class="stat-value" id="totalRecords">0</div>
+            </div>
+            <div class="stat">
+              <div class="stat-label">Total final seed</div>
+              <div class="stat-value" id="totalWeight">0 kg</div>
+            </div>
+            <div class="stat">
+              <div class="stat-label">Total fruits</div>
+              <div class="stat-value" id="totalFruits">0</div>
+            </div>
+            <div class="stat">
+              <div class="stat-label">Drying completed</div>
+              <div class="stat-value" id="dryingCompleted">0</div>
+            </div>
+          </div>
+        </div>
+
+        <div class="card">
+          <h2>Saved production records</h2>
+          <p class="muted">Edit a record to update its stages or quantity.</p>
+          <div id="records"></div>
+        </div>
+      </section>
+    </div>
+  </main>
+
+  <footer>SeedFlow · Smart Seed Production Management</footer>
+
+  <script>
+    // Demo session check. This is not secure server-side authentication.
+    const role = sessionStorage.getItem("seedflowRole");
+    const email = sessionStorage.getItem("seedflowEmail");
+
+    if (!role || !email) {
+      window.location.href = "login.html";
+    }
+
+    if (role && role.toLowerCase() !== "farmer") {
+      alert("Seed Production is available for the Farmer role.");
+      window.location.href = "dashboard.html";
+    }
+
+    const storageKey = "seedflowProduction_" + email;
+    const farmStorageKey = "seedflowFarms_" + email;
+
+    let records = loadRecords();
+    let editingId = null;
+
+    document.getElementById("userInfo").textContent =
+      "Signed in as: " + email;
+
+    function loadRecords() {
+      try {
+        const saved = JSON.parse(localStorage.getItem(storageKey) || "[]");
+        return Array.isArray(saved) ? saved : [];
+      } catch (error) {
+        return [];
+      }
+    }
+
+    function saveRecords() {
+      try {
+        localStorage.setItem(storageKey, JSON.stringify(records));
+        return true;
+      } catch (error) {
+        showMessage("Unable to save data. Check your browser storage settings.", true);
+        return false;
+      }
+    }
+
+    function loadFarmOptions() {
+      try {
+        const farms = JSON.parse(localStorage.getItem(farmStorageKey) || "[]");
+        if (!Array.isArray(farms)) return;
+
+        const datalist = document.getElementById("farmOptions");
+
+        farms.forEach(function(farm) {
+          const name = farm.farmName || farm.name || "";
+          if (!name) return;
+
+          const option = document.createElement("option");
+          option.value = name;
+          datalist.appendChild(option);
+        });
+      } catch (error) {
+        console.log("No saved farm list found.");
+      }
+    }
+
+    function showMessage(message, isError = false) {
+      const box = document.getElementById("message");
+      box.textContent = message;
+      box.style.display = "block";
+      box.style.background = isError ? "#fff0ee" : "#e8f2e9";
+      box.style.color = isError ? "#b94b43" : "#285c3b";
+    }
+
+    function getValue(id) {
+      return document.getElementById(id).value.trim();
+    }
+
+    function setValue(id, value) {
+      document.getElementById(id).value = value ?? "";
+    }
+
+    function isCompleted(record) {
+      return record.drying1Status === "Completed" &&
+             record.drying2Status === "Completed";
+    }
+
+    document.getElementById("productionForm").addEventListener("submit", function(event) {
+      event.preventDefault();
+
+      const farmName = getValue("farmName");
+      const cropName = getValue("cropName");
+
+      if (!farmName || !cropName) {
+        showMessage("Please enter farm name and crop name.", true);
+        return;
+      }
+
+      const fruitValue = getValue("fruitCount");
+      const weightValue = getValue("seedWeight");
+
+      if (fruitValue !== "" && Number(fruitValue) < 0) {
+        showMessage("Fruit count cannot be negative.", true);
+        return;
+      }
+
+      if (weightValue !== "" && Number(weightValue) < 0) {
+        showMessage("Seed quantity cannot be negative.", true);
+        return;
+      }
+
+      const record = {
+        id: editingId || (Date.now().toString() + Math.random().toString(16).slice(2)),
+        farmName: farmName,
+        cropName: cropName,
+        batchNumber: getValue("batchNumber"),
+        fruitCount: fruitValue === "" ? "" : Number(fruitValue),
+        harvestDate: getValue("harvestDate"),
+        extractionDate: getValue("extractionDate"),
+        extractionStatus: getValue("extractionStatus"),
+        drying1Date: getValue("drying1Date"),
+        drying1Status: getValue("drying1Status"),
+        drying2Date: getValue("drying2Date"),
+        drying2Status: getValue("drying2Status"),
+        seedWeight: weightValue === "" ? "" : Number(weightValue),
+        notes: getValue("notes"),
+        updatedAt: new Date().toISOString()
+      };
+
+      if (editingId) {
+        const index = records.findIndex(item => item.id === editingId);
+        if (index !== -1) {
+          records[index] = record;
+        } else {
+          records.unshift(record);
+        }
+      } else {
+        records.unshift(record);
+      }
+
+      if (!saveRecords()) return;
+
+      resetForm();
+      renderRecords();
+      showMessage(editingId ? "Production record updated." : "Production record saved.");
+    });
+
+    function renderRecords() {
+      const container = document.getElementById("records");
+      container.replaceChildren();
+
+      document.getElementById("totalRecords").textContent = records.length;
+
+      const totalWeight = records.reduce((sum, record) => {
+        return sum + (Number(record.seedWeight) || 0);
+      }, 0);
+
+      const totalFruits = records.reduce((sum, record) => {
+        return sum + (Number(record.fruitCount) || 0);
+      }, 0);
+
+      const completed = records.filter(isCompleted).length;
+
+      document.getElementById("totalWeight").textContent =
+        totalWeight.toLocaleString(undefined, { maximumFractionDigits: 3 }) + " kg";
+      document.getElementById("totalFruits").textContent =
+        totalFruits.toLocaleString();
+      document.getElementById("dryingCompleted").textContent =
+        completed + " / " + records.length;
+
+      if (records.length === 0) {
+        const empty = document.createElement("div");
+        empty.className = "empty";
+        empty.textContent = "No production records yet. Add your first batch.";
+        container.appendChild(empty);
+        return;
+      }
+
+      records.forEach(function(record) {
+        const card = document.createElement("article");
+        card.className = "record";
+
+        const title = document.createElement("h3");
+        title.textContent = record.cropName + " · " + record.farmName;
+        card.appendChild(title);
+
+        const pill = document.createElement("span");
+        pill.className = "pill";
+        pill.textContent = isCompleted(record)
+          ? "Both drying stages completed"
+          : "Production in progress";
+        card.appendChild(pill);
+
+        addText(card, "Batch / Plot: " + (record.batchNumber || "Not entered"));
+        addText(card, "Fruit count: " +
+          (record.fruitCount === "" ? "Not entered" : record.fruitCount));
+        addText(card, "Harvesting date: " || ""); 
+        // Display dates and statuses from the saved record.
+        addText(card, "Harvesting date: " + (record.harvestDate || "Not entered"));
+        addText(card, "Extraction: " + (record.extractionStatus || "Not started") +
+          (record.extractionDate ? " · " + record.extractionDate : ""));
+        addText(card, "First drying: " + (record.drying1Status || "Not started") +
+          (record.drying1Date ? " · " + record.drying1Date : ""));
+        addText(card, "Second drying: " + (record.drying2Status || "Not started") +
+          (record.drying2Date ? " · " + record.drying2Date : ""));
+        addText(card, "Final seed quantity: " +
+          (record.seedWeight === "" ? "Not entered" : record.seedWeight + " kg"));
+
+        if (record.notes) addText(card, "Notes: " + record.notes);
+
+        addText(card, "Last updated: " +
+          (record.updatedAt ? new Date(record.updatedAt).toLocaleString() : "Not available"));
+
+        const actions = document.createElement("div");
+        actions.className = "record-actions";
+
+        const editButton = document.createElement("button");
+        editButton.type = "button";
+        editButton.className = "secondary";
+        editButton.textContent = "Edit";
+        editButton.addEventListener("click", () => editRecord(record.id));
+
+        const deleteButton = document.createElement("button");
+        deleteButton.type = "button";
+        deleteButton.className = "danger";
+        deleteButton.textContent = "Delete";
+        deleteButton.addEventListener("click", () => deleteRecord(record.id));
+
+        actions.append(editButton, deleteButton);
+        card.appendChild(actions);
+        container.appendChild(card);
+      });
+    }
+
+    function addText(parent, text) {
+      const p = document.createElement("p");
+      p.textContent = text;
+      parent.appendChild(p);
+    }
+
+    function editRecord(id) {
+      const record = records.find(item => item.id === id);
+      if (!record) return;
+
+      editingId = id;
+
+      setValue("farmName", record.farmName);
+      setValue("cropName", record.cropName);
+      setValue("batchNumber", record.batchNumber);
+      setValue("fruitCount", record.fruitCount);
+      setValue("harvestDate", record.harvestDate);
+      setValue("extractionDate", record.extractionDate);
+      setValue("extractionStatus", record.extractionStatus || "Not started");
+      setValue("drying1Date", record.drying1Date);
+      setValue("drying1Status", record.drying1Status || "Not started");
+      setValue("drying2Date", record.drying2Date);
+      setValue("drying2Status", record.drying2Status || "Not started");
+      setValue("seedWeight", record.seedWeight);
+      setValue("notes", record.notes);
+
+      document.getElementById("formTitle").textContent = "Edit production record";
+      document.getElementById("saveButton").textContent = "Update Production Record";
+      document.getElementById("cancelEdit").style.display = "block";
+
+      window.scrollTo({ top: 0, behavior: "smooth" });
+    }
+
+    function deleteRecord(id) {
+      if (!confirm("Are you sure you want to delete this production record?")) return;
+
+      records = records.filter(item => item.id !== id);
+
+      if (saveRecords()) {
+        renderRecords();
+        showMessage("Production record deleted.");
+      }
+    }
+
+    function resetForm() {
+      editingId = null;
+      document.getElementById("productionForm").reset();
+      document.getElementById("formTitle").textContent = "Add production record";
+      document.getElementById("saveButton").textContent = "Save Production Record";
+      document.getElementById("cancelEdit").style.display = "none";
+    }
+
+    function logout() {
+      sessionStorage.removeItem("seedflowRole");
+      sessionStorage.removeItem("seedflowEmail");
+      window.location.href = "login.html";
+    }
+
+    loadFarmOptions();
+    renderRecords();
+  </script>
+</body>
+</html>
