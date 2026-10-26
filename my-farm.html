@@ -1,0 +1,229 @@
+
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>My Farm | SeedFlow</title>
+
+    <style>
+        * {
+            box-sizing: border-box;
+        }
+
+        body {
+            margin: 0;
+            font-family: Arial, sans-serif;
+            background: #eef1e9;
+            color: #183326;
+        }
+
+        header {
+            background: #285c3b;
+            color: white;
+            padding: 20px 6%;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            gap: 12px;
+            flex-wrap: wrap;
+        }
+
+        main {
+            max-width: 900px;
+            margin: 35px auto;
+            padding: 20px;
+        }
+
+        .card {
+            background: white;
+            padding: 25px;
+            margin: 20px 0;
+            border-radius: 16px;
+            box-shadow: 0 5px 20px #18332612;
+        }
+
+        label {
+            display: block;
+            margin: 15px 0 7px;
+            font-weight: bold;
+        }
+
+        input, select {
+            width: 100%;
+            padding: 12px;
+            border: 1px solid #ccd6cc;
+            border-radius: 8px;
+            font-size: 15px;
+        }
+
+        button {
+            background: #285c3b;
+            color: white;
+            border: 0;
+            border-radius: 8px;
+            padding: 12px 18px;
+            cursor: pointer;
+            margin-top: 18px;
+        }
+
+        .back {
+            color: #285c3b;
+            text-decoration: none;
+        }
+
+        .farm-item {
+            border-bottom: 1px solid #e2e8e1;
+            padding: 12px 0;
+            overflow-wrap: anywhere;
+        }
+
+        .farm-item:last-child {
+            border-bottom: none;
+        }
+    </style>
+</head>
+
+<body>
+
+<header>
+    <strong>🌱 SeedFlow | My Farm</strong>
+    <button onclick="logout()">Logout</button>
+</header>
+
+<main>
+    <a class="back" href="dashboard.html">← Back to Dashboard</a>
+
+    <h1>My Farm</h1>
+    <p>Add and manage your farm and plot details.</p>
+
+    <section class="card">
+        <h2>Farm Details</h2>
+
+        <form id="farmForm">
+            <label for="farmName">Farm Name</label>
+            <input id="farmName" required placeholder="Enter farm name">
+
+            <label for="plotNumber">Plot Number</label>
+            <input id="plotNumber" required placeholder="Enter plot number">
+
+            <label for="cropName">Crop Name</label>
+            <select id="cropName" required>
+                <option value="">Select crop</option>
+                <option>Tomato</option>
+                <option>Chilli</option>
+                <option>Maize</option>
+                <option>Cotton</option>
+                <option>Other</option>
+            </select>
+
+            <label for="sowingDate">Sowing Date</label>
+            <input type="date" id="sowingDate" required>
+
+            <button type="submit">Save Farm Details</button>
+        </form>
+    </section>
+
+    <section class="card">
+        <h2>Saved Farm Records</h2>
+        <div id="farmList">No farm records saved yet.</div>
+    </section>
+</main>
+
+<script>
+    const role = sessionStorage.getItem("seedflowRole");
+    const email = sessionStorage.getItem("seedflowEmail");
+
+    if (!role || !email) {
+        window.location.href = "login.html";
+    }
+
+    const storageKey = "seedflowFarms_" + (email || "guest");
+
+    function displayFarms() {
+        const farms = JSON.parse(
+            localStorage.getItem(storageKey) || "[]"
+        );
+
+        const list = document.getElementById("farmList");
+        list.replaceChildren();
+
+        if (farms.length === 0) {
+            list.textContent = "No farm records saved yet.";
+            return;
+        }
+
+        farms.forEach((farm, index) => {
+            const item = document.createElement("div");
+            item.className = "farm-item";
+
+            const details = document.createElement("p");
+            details.textContent =
+                "Farm: " + farm.name +
+                " | Plot: " + farm.plot +
+                " | Crop: " + farm.crop +
+                " | Sowing date: " + farm.date;
+
+            const remove = document.createElement("button");
+            remove.textContent = "Delete";
+            remove.type = "button";
+
+            remove.onclick = function () {
+                const updated = JSON.parse(
+                    localStorage.getItem(storageKey) || "[]"
+                );
+
+                updated.splice(index, 1);
+                localStorage.setItem(
+                    storageKey,
+                    JSON.stringify(updated)
+                );
+
+                displayFarms();
+            };
+
+            item.append(details, remove);
+            list.appendChild(item);
+        });
+    }
+
+    document.getElementById("farmForm").addEventListener(
+        "submit",
+        function (event) {
+            event.preventDefault();
+
+            const farm = {
+                name: document.getElementById("farmName").value.trim(),
+                plot: document.getElementById("plotNumber").value.trim(),
+                crop: document.getElementById("cropName").value,
+                date: document.getElementById("sowingDate").value
+            };
+
+            const farms = JSON.parse(
+                localStorage.getItem(storageKey) || "[]"
+            );
+
+            farms.push(farm);
+
+            localStorage.setItem(
+                storageKey,
+                JSON.stringify(farms)
+            );
+
+            this.reset();
+            displayFarms();
+            alert("Farm details saved successfully!");
+        }
+    );
+
+    function logout() {
+        sessionStorage.removeItem("seedflowRole");
+        sessionStorage.removeItem("seedflowEmail");
+        window.location.href = "login.html";
+    }
+
+    displayFarms();
+</script>
+
+</body>
+</html>
