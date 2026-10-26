@@ -1,0 +1,577 @@
+
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>SeedFlow | Crop Progress</title>
+  <style>
+    :root {
+      --green: #285c3b;
+      --green-light: #e8f2e9;
+      --bg: #f7f8f4;
+      --white: #ffffff;
+      --text: #203328;
+      --muted: #718075;
+      --border: #e1e8df;
+      --orange: #d98a35;
+      --red: #b94b43;
+    }
+
+    * { box-sizing: border-box; }
+
+    body {
+      margin: 0;
+      font-family: Arial, Helvetica, sans-serif;
+      background: var(--bg);
+      color: var(--text);
+    }
+
+    header {
+      background: var(--white);
+      border-bottom: 1px solid var(--border);
+      padding: 18px 6%;
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      gap: 12px;
+      flex-wrap: wrap;
+    }
+
+    .brand {
+      font-size: 24px;
+      font-weight: 800;
+      color: var(--green);
+    }
+
+    .brand span { color: var(--orange); }
+
+    .top-actions {
+      display: flex;
+      gap: 10px;
+      flex-wrap: wrap;
+    }
+
+    button, .back-link {
+      border: 0;
+      border-radius: 9px;
+      padding: 11px 15px;
+      font-size: 14px;
+      font-weight: 700;
+      cursor: pointer;
+      text-decoration: none;
+    }
+
+    .primary { background: var(--green); color: white; }
+    .secondary { background: var(--green-light); color: var(--green); }
+    .danger { background: #fff0ee; color: var(--red); }
+
+    main {
+      width: min(1050px, 92%);
+      margin: 34px auto;
+    }
+
+    .welcome { margin-bottom: 24px; }
+
+    .eyebrow {
+      color: var(--green);
+      font-weight: 800;
+      font-size: 12px;
+      letter-spacing: 1.5px;
+      text-transform: uppercase;
+    }
+
+    h1 { margin: 8px 0; font-size: clamp(28px, 5vw, 38px); }
+    h2 { margin-top: 0; font-size: 20px; }
+    p { line-height: 1.6; }
+    .muted { color: var(--muted); }
+
+    .layout {
+      display: grid;
+      grid-template-columns: minmax(0, 1fr) minmax(0, 1.1fr);
+      gap: 20px;
+      align-items: start;
+    }
+
+    .card {
+      background: var(--white);
+      border: 1px solid var(--border);
+      border-radius: 16px;
+      padding: 23px;
+      margin-bottom: 20px;
+      box-shadow: 0 5px 20px rgba(31, 60, 39, 0.04);
+    }
+
+    label {
+      display: block;
+      font-size: 13px;
+      font-weight: 700;
+      margin: 16px 0 7px;
+    }
+
+    input, select, textarea {
+      width: 100%;
+      border: 1px solid #d9e2d7;
+      border-radius: 9px;
+      padding: 12px;
+      background: #fff;
+      color: var(--text);
+      font: inherit;
+    }
+
+    textarea { min-height: 85px; resize: vertical; }
+    input:focus, select:focus, textarea:focus {
+      outline: 2px solid #b9d7bd;
+      border-color: var(--green);
+    }
+
+    .full { width: 100%; margin-top: 18px; }
+
+    .progress-track {
+      height: 10px;
+      width: 100%;
+      background: #e7eee6;
+      border-radius: 20px;
+      overflow: hidden;
+      margin: 12px 0;
+    }
+
+    .progress-fill {
+      height: 100%;
+      width: 0;
+      background: var(--green);
+      border-radius: 20px;
+      transition: width .2s ease;
+    }
+
+    .progress-number {
+      font-size: 34px;
+      font-weight: 800;
+      color: var(--green);
+    }
+
+    .stage-row {
+      display: flex;
+      justify-content: space-between;
+      gap: 10px;
+      align-items: center;
+    }
+
+    .pill {
+      background: var(--green-light);
+      color: var(--green);
+      padding: 6px 10px;
+      border-radius: 20px;
+      font-size: 12px;
+      font-weight: 700;
+    }
+
+    .record {
+      border: 1px solid var(--border);
+      border-radius: 12px;
+      padding: 16px;
+      margin-top: 13px;
+    }
+
+    .record h3 { margin: 0 0 6px; font-size: 17px; }
+    .record p { margin: 6px 0; font-size: 14px; }
+    .record-actions { display: flex; gap: 8px; margin-top: 12px; flex-wrap: wrap; }
+    .record-actions button { padding: 9px 11px; }
+
+    .empty {
+      padding: 24px 12px;
+      text-align: center;
+      color: var(--muted);
+      border: 1px dashed #cdd9cb;
+      border-radius: 12px;
+      margin-top: 14px;
+    }
+
+    #message {
+      display: none;
+      padding: 12px;
+      margin-bottom: 16px;
+      border-radius: 9px;
+      background: var(--green-light);
+      color: var(--green);
+      font-size: 14px;
+    }
+
+    footer {
+      text-align: center;
+      color: var(--muted);
+      padding: 20px;
+      font-size: 12px;
+    }
+
+    @media (max-width: 720px) {
+      .layout { grid-template-columns: 1fr; }
+      header { padding: 16px 4%; }
+      main { margin-top: 24px; }
+      .card { padding: 18px; }
+    }
+  </style>
+</head>
+
+<body>
+  <header>
+    <div class="brand">Seed<span>Flow</span></div>
+    <div class="top-actions">
+      <a class="back-link secondary" href="dashboard.html">← Dashboard</a>
+      <button class="secondary" onclick="logout()">Logout</button>
+    </div>
+  </header>
+
+  <main>
+    <section class="welcome">
+      <div class="eyebrow">Farmer workspace</div>
+      <h1>Crop Progress 🌱</h1>
+      <p class="muted">Track your crop stage, monitor progress, and save farm updates.</p>
+      <p id="farmerInfo" class="muted"></p>
+    </section>
+
+    <div id="message" role="status"></div>
+
+    <div class="layout">
+      <section class="card">
+        <h2 id="formTitle">Update your crop</h2>
+        <p class="muted">Add your farm's current crop stage below.</p>
+
+        <form id="progressForm">
+          <label for="farmName">Farm name *</label>
+          <input id="farmName" list="farmOptions" required maxlength="80"
+                 placeholder="e.g. North Plot">
+          <datalist id="farmOptions"></datalist>
+
+          <label for="cropName">Crop name *</label>
+          <input id="cropName" required maxlength="60"
+                 placeholder="e.g. Tomato">
+
+          <label for="plotNumber">Plot number</label>
+          <input id="plotNumber" maxlength="40" placeholder="e.g. Plot A1">
+
+          <label for="sowingDate">Sowing date</label>
+          <input id="sowingDate" type="date">
+
+          <label for="stage">Current crop stage *</label>
+          <select id="stage" required>
+            <option value="0">Sowing</option>
+            <option value="1">Germination</option>
+            <option value="2">Vegetative Growth</option>
+            <option value="3">Flowering</option>
+            <option value="4">Pollination</option>
+            <option value="5">Fruit Development</option>
+            <option value="6">Ripening</option>
+            <option value="7">Harvesting</option>
+            <option value="8">Seed Extraction</option>
+            <option value="9">Drying</option>
+            <option value="10">Quality Testing</option>
+            <option value="11">Completed</option>
+          </select>
+
+          <label for="progress">Progress percentage: <span id="progressLabel">0%</span></label>
+          <input id="progress" type="range" min="0" max="100" step="5" value="0">
+
+          <label for="notes">Notes / observations</label>
+          <textarea id="notes" maxlength="500"
+                    placeholder="Add crop condition, issues, or observations..."></textarea>
+
+          <button type="submit" class="primary full" id="saveButton">
+            Save Crop Progress
+          </button>
+          <button type="button" class="secondary full" id="cancelEdit"
+                  style="display:none" onclick="resetForm()">
+            Cancel Edit
+          </button>
+        </form>
+      </section>
+
+      <section>
+        <div class="card">
+          <h2>Current update</h2>
+          <div class="stage-row">
+            <span class="muted">Selected progress</span>
+            <span class="progress-number" id="previewNumber">0%</span>
+          </div>
+          <div class="progress-track">
+            <div class="progress-fill" id="previewBar"></div>
+          </div>
+          <p><strong>Stage:</strong> <span id="previewStage">Sowing</span></p>
+          <p class="muted">Progress is an estimate you can adjust based on actual field conditions.</p>
+        </div>
+
+        <div class="card">
+          <h2>Saved crop records</h2>
+          <p class="muted">Your saved updates appear here on this browser.</p>
+          <div id="records"></div>
+        </div>
+      </section>
+    </div>
+  </main>
+
+  <footer>SeedFlow · Smart Seed Production Management</footer>
+
+  <script>
+    // Demo session check. Login is not verified by a secure server.
+    const role = sessionStorage.getItem("seedflowRole");
+    const email = sessionStorage.getItem("seedflowEmail");
+
+    if (!role || !email) {
+      window.location.href = "login.html";
+    }
+
+    if (role && role.toLowerCase() !== "farmer") {
+      alert("Crop Progress is available for the Farmer role.");
+      window.location.href = "dashboard.html";
+    }
+
+    const storageKey = "seedflowCropProgress_" + email;
+    const farmStorageKey = "seedflowFarms_" + email;
+
+    const stages = [
+      "Sowing",
+      "Germination",
+      "Vegetative Growth",
+      "Flowering",
+      "Pollination",
+      "Fruit Development",
+      "Ripening",
+      "Harvesting",
+      "Seed Extraction",
+      "Drying",
+      "Quality Testing",
+      "Completed"
+    ];
+
+    let records = loadRecords();
+    let editingId = null;
+
+    document.getElementById("farmerInfo").textContent =
+      "Signed in as: " + email;
+
+    function loadRecords() {
+      try {
+        const saved = JSON.parse(localStorage.getItem(storageKey) || "[]");
+        return Array.isArray(saved) ? saved : [];
+      } catch (error) {
+        return [];
+      }
+    }
+
+    function saveRecords() {
+      try {
+        localStorage.setItem(storageKey, JSON.stringify(records));
+        return true;
+      } catch (error) {
+        showMessage("Could not save data. Check browser storage settings.", true);
+        return false;
+      }
+    }
+
+    function loadFarmOptions() {
+      try {
+        const farms = JSON.parse(localStorage.getItem(farmStorageKey) || "[]");
+        const datalist = document.getElementById("farmOptions");
+
+        if (!Array.isArray(farms)) return;
+
+        farms.forEach(function(farm) {
+          const name = farm.farmName || farm.name || "";
+          if (name) {
+            const option = document.createElement("option");
+            option.value = name;
+            datalist.appendChild(option);
+          }
+        });
+      } catch (error) {
+        console.log("No saved farm list found.");
+      }
+    }
+
+    function showMessage(message, isError = false) {
+      const box = document.getElementById("message");
+      box.textContent = message;
+      box.style.display = "block";
+      box.style.background = isError ? "#fff0ee" : "#e8f2e9";
+      box.style.color = isError ? "#b94b43" : "#285c3b";
+    }
+
+    function updatePreview() {
+      const progress = Number(document.getElementById("progress").value);
+      const stageIndex = Number(document.getElementById("stage").value);
+
+      document.getElementById("progressLabel").textContent = progress + "%";
+      document.getElementById("previewNumber").textContent = progress + "%";
+      document.getElementById("previewBar").style.width = progress + "%";
+      document.getElementById("previewStage").textContent = stages[stageIndex];
+    }
+
+    document.getElementById("progress").addEventListener("input", updatePreview);
+    document.getElementById("stage").addEventListener("change", updatePreview);
+
+    // Suggest a progress value when the stage changes.
+    document.getElementById("stage").addEventListener("change", function() {
+      const suggested = Math.round((Number(this.value) / (stages.length - 1)) * 100 / 5) * 5;
+      document.getElementById("progress").value = suggested;
+      updatePreview();
+    });
+
+    document.getElementById("progressForm").addEventListener("submit", function(event) {
+      event.preventDefault();
+
+      const farmName = document.getElementById("farmName").value.trim();
+      const cropName = document.getElementById("cropName").value.trim();
+
+      if (!farmName || !cropName) {
+        showMessage("Please enter the farm name and crop name.", true);
+        return;
+      }
+
+      const stageIndex = Number(document.getElementById("stage").value);
+      const record = {
+        id: editingId || (Date.now().toString() + Math.random().toString(16).slice(2)),
+        farmName: farmName,
+        cropName: cropName,
+        plotNumber: document.getElementById("plotNumber").value.trim(),
+        sowingDate: document.getElementById("sowingDate").value,
+        stageIndex: stageIndex,
+        stage: stages[stageIndex],
+        progress: Number(document.getElementById("progress").value),
+        notes: document.getElementById("notes").value.trim(),
+        updatedAt: new Date().toISOString()
+      };
+
+      if (editingId) {
+        const index = records.findIndex(item => item.id === editingId);
+        if (index !== -1) records[index] = record;
+      } else {
+        records.unshift(record);
+      }
+
+      if (!saveRecords()) return;
+
+      resetForm();
+      renderRecords();
+      showMessage("Crop progress saved successfully!");
+    });
+
+    function renderRecords() {
+      const container = document.getElementById("records");
+      container.replaceChildren();
+
+      if (records.length === 0) {
+        const empty = document.createElement("div");
+        empty.className = "empty";
+        empty.textContent = "No crop updates saved yet. Add your first update.";
+        container.appendChild(empty);
+        return;
+      }
+
+      records.forEach(function(record) {
+        const card = document.createElement("article");
+        card.className = "record";
+
+        const title = document.createElement("h3");
+        title.textContent = record.cropName + " · " + record.farmName;
+        card.appendChild(title);
+
+        const pill = document.createElement("span");
+        pill.className = "pill";
+        pill.textContent = record.stage;
+        card.appendChild(pill);
+
+        const barTrack = document.createElement("div");
+        barTrack.className = "progress-track";
+        const bar = document.createElement("div");
+        bar.className = "progress-fill";
+        bar.style.width = Math.max(0, Math.min(100, Number(record.progress) || 0)) + "%";
+        barTrack.appendChild(bar);
+        card.appendChild(barTrack);
+
+        addText(card, "Progress: " + record.progress + "%");
+        if (record.plotNumber) addText(card, "Plot: " + record.plotNumber);
+        if (record.sowingDate) addText(card, "Sowing date: " + record.sowingDate);
+        if (record.notes) addText(card, "Notes: " + record.notes);
+
+        const dateText = record.updatedAt
+          ? new Date(record.updatedAt).toLocaleString()
+          : "Date not available";
+        addText(card, "Last updated: " + dateText);
+
+        const actions = document.createElement("div");
+        actions.className = "record-actions";
+
+        const editButton = document.createElement("button");
+        editButton.className = "secondary";
+        editButton.textContent = "Edit";
+        editButton.addEventListener("click", () => editRecord(record.id));
+
+        const deleteButton = document.createElement("button");
+        deleteButton.className = "danger";
+        deleteButton.textContent = "Delete";
+        deleteButton.addEventListener("click", () => deleteRecord(record.id));
+
+        actions.append(editButton, deleteButton);
+        card.appendChild(actions);
+        container.appendChild(card);
+      });
+    }
+
+    function addText(parent, text) {
+      const p = document.createElement("p");
+      p.textContent = text;
+      parent.appendChild(p);
+    }
+
+    function editRecord(id) {
+      const record = records.find(item => item.id === id);
+      if (!record) return;
+
+      editingId = id;
+      document.getElementById("farmName").value = record.farmName || "";
+      document.getElementById("cropName").value = record.cropName || "";
+      document.getElementById("plotNumber").value = record.plotNumber || "";
+      document.getElementById("sowingDate").value = record.sowingDate || "";
+      document.getElementById("stage").value = String(record.stageIndex ?? 0);
+      document.getElementById("progress").value = record.progress || 0;
+      document.getElementById("notes").value = record.notes || "";
+
+      document.getElementById("formTitle").textContent = "Edit crop update";
+      document.getElementById("saveButton").textContent = "Update Crop Progress";
+      document.getElementById("cancelEdit").style.display = "block";
+      updatePreview();
+      window.scrollTo({ top: 0, behavior: "smooth" });
+    }
+
+    function deleteRecord(id) {
+      if (!confirm("Delete this crop progress record?")) return;
+      records = records.filter(item => item.id !== id);
+
+      if (saveRecords()) {
+        renderRecords();
+        showMessage("Crop progress record deleted.");
+      }
+    }
+
+    function resetForm() {
+      editingId = null;
+      document.getElementById("progressForm").reset();
+      document.getElementById("progress").value = 0;
+      document.getElementById("formTitle").textContent = "Update your crop";
+      document.getElementById("saveButton").textContent = "Save Crop Progress";
+      document.getElementById("cancelEdit").style.display = "none";
+      updatePreview();
+    }
+
+    function logout() {
+      sessionStorage.removeItem("seedflowRole");
+      sessionStorage.removeItem("seedflowEmail");
+      window.location.href = "login.html";
+    }
+
+    loadFarmOptions();
+    updatePreview();
+    renderRecords();
+  </script>
+</body>
+</html>
